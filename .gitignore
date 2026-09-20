@@ -24,9 +24,11 @@ build/
 *.tsbuildinfo
 
 # Local temporary and storage uploads
-uploads/
-storage/
-temp/
+/uploads/
+/storage/
+/temp/
+!backend/src/storage/
+!backend/src/storage/**
 
 # OS and IDE files
 .DS_Store
