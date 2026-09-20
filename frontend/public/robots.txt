@@ -1,0 +1,15 @@
+# robots.txt for DROP by LocalReach (https://drop.localreach.in)
+
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /how-it-works
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+
+# Disallow private temporary DROP tokens and backend APIs
+Disallow: /f/
+Disallow: /api/
+
+Sitemap: https://drop.localreach.in/sitemap.xml

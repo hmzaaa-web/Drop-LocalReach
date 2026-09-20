@@ -1,0 +1,22 @@
+{
+  "name": "drop-by-localreach",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DROP by LocalReach - Premium Temporary File Sharing",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"green,cyan\" \"npm run --workspace=backend dev\" \"npm run --workspace=frontend dev\"",
+    "dev:backend": "npm run --workspace=backend dev",
+    "dev:frontend": "npm run --workspace=frontend dev",
+    "build": "npm run --workspace=backend build && npm run --workspace=frontend build",
+    "build:backend": "npm run --workspace=backend build",
+    "build:frontend": "npm run --workspace=frontend build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
