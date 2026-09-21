@@ -58,6 +58,9 @@ export const Scan: React.FC<ScanProps> = ({ onNotify }) => {
       return;
     }
 
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
     const objectUrl = URL.createObjectURL(file);
     setImagePreviewUrl(objectUrl);
     setScanState('analyzing');
@@ -65,7 +68,6 @@ export const Scan: React.FC<ScanProps> = ({ onNotify }) => {
     const img = new Image();
     img.onload = async () => {
       try {
-        // Quick subtle analysis delay for visual reassurance
         const token = await scanQrFromImage(img);
         if (token) {
           setRecoveredToken(token);
@@ -86,6 +88,9 @@ export const Scan: React.FC<ScanProps> = ({ onNotify }) => {
   };
 
   const handleReset = () => {
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
     setImagePreviewUrl(null);
     setRecoveredToken(null);
     setScanState('idle');
