@@ -2,7 +2,7 @@
   "name": "drop-backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "src/server.ts",
+  "main": "dist/app.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
