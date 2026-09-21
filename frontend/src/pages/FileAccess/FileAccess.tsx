@@ -10,6 +10,7 @@ import {
   Clock,
   ArrowLeft,
   FileQuestion,
+  RefreshCw,
 } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { BackButton } from '../../components/BackButton';
@@ -35,6 +36,7 @@ export const FileAccess: React.FC<FileAccessProps> = ({ onNotify }) => {
   const [metadata, setMetadata] = useState<FileDropMetadata | null>(null);
   const [isExpired, setIsExpired] = useState(false);
   const [isNotFound, setIsNotFound] = useState(false);
+  const [isTransientError, setIsTransientError] = useState(false);
 
   // Passcode unlock states
   const [passcode, setPasscode] = useState('');
@@ -46,29 +48,36 @@ export const FileAccess: React.FC<FileAccessProps> = ({ onNotify }) => {
   // In-browser preview modal/drawer
   const [showPreview, setShowPreview] = useState(false);
 
-  useEffect(() => {
+  const fetchMetadata = async () => {
     if (!token) {
       setIsNotFound(true);
       setIsLoading(false);
       return;
     }
 
-    const fetchMetadata = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getFileMetadata(token);
-        setMetadata(data);
-      } catch (err: any) {
-        if (err.isExpired || err.status === 410) {
-          setIsExpired(true);
-        } else {
-          setIsNotFound(true);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    setIsLoading(true);
+    setIsTransientError(false);
+    setIsNotFound(false);
+    setIsExpired(false);
 
+    try {
+      const data = await getFileMetadata(token);
+      setMetadata(data);
+    } catch (err: any) {
+      if (err.isExpired || err.status === 410) {
+        setIsExpired(true);
+      } else if (err.isNotFound || err.status === 404) {
+        setIsNotFound(true);
+      } else {
+        // Transient error (503, 502, 504, 500, network error)
+        setIsTransientError(true);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchMetadata();
   }, [token]);
 
@@ -84,7 +93,8 @@ export const FileAccess: React.FC<FileAccessProps> = ({ onNotify }) => {
 
     try {
       const response = await verifyPasscode(token, passcode.trim());
-      setDownloadTicket(response.downloadTicket);
+      const ticket = response.downloadTicket || response.ticket;
+      setDownloadTicket(ticket || null);
       setIsUnlocked(true);
       if (onNotify) onNotify('Passcode verified. File unlocked!', 'success');
     } catch (err: any) {
@@ -175,7 +185,59 @@ export const FileAccess: React.FC<FileAccessProps> = ({ onNotify }) => {
     );
   }
 
-  // 3. INVALID LINK STATE: "DROP NOT FOUND"
+  // 3. TRANSIENT ERROR STATE: "UNABLE TO LOAD DROP"
+  if (isTransientError) {
+    return (
+      <div className="flex-1 site-container py-12 md:py-20 text-center animate-fade-in">
+        <SEO
+          title="Access File — DROP by LocalReach"
+          description="Secure passcode-protected file download link on DROP by LocalReach."
+          robots="noindex, nofollow, noarchive"
+        />
+        <div className="mb-6 flex justify-start">
+          <BackButton fallbackUrl="/" />
+        </div>
+
+        <div className="glass-card max-w-lg mx-auto rounded-card p-8 md:p-12 border border-brand-neutral-200/80 bg-white/80 space-y-6">
+          <div className="w-14 h-14 rounded-full bg-brand-neutral-100 text-brand-neutral-500 mx-auto flex items-center justify-center">
+            <AlertCircle size={24} strokeWidth={2} />
+          </div>
+
+          <div className="space-y-2">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-brand-black">
+              UNABLE TO LOAD DROP
+            </h1>
+            <p className="text-sm text-brand-neutral-500 leading-relaxed max-w-sm mx-auto">
+              Unable to load this DROP right now. Please try again.
+            </p>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={fetchMetadata}
+              className="w-full sm:w-auto"
+            >
+              <RefreshCw size={14} />
+              Try Again
+            </Button>
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => navigate('/')}
+              className="w-full sm:w-auto"
+            >
+              <ArrowLeft size={14} />
+              Return Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 4. INVALID LINK STATE: "DROP NOT FOUND"
   if (isNotFound || !metadata) {
     return (
       <div className="flex-1 site-container py-12 md:py-20 text-center animate-fade-in">

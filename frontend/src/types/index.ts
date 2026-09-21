@@ -26,6 +26,9 @@ export interface UploadResponse {
 export interface VerifyResponse {
   success: boolean;
   downloadTicket: string;
+  ticket?: string;
+  downloadUrl?: string;
+  previewUrl?: string;
   file: {
     fileId: string;
     originalName: string;

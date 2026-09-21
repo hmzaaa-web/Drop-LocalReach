@@ -87,18 +87,79 @@ export async function uploadFile(
   return completeData;
 }
 
-export async function getFileMetadata(token: string): Promise<FileDropMetadata> {
-  const response = await fetch(`${API_BASE}/api/files/${encodeURIComponent(token)}`);
-  const data = await response.json();
+export async function getFileMetadata(token: string, maxAttempts = 3): Promise<FileDropMetadata> {
+  const delays = [500, 1000, 1500];
 
-  if (!response.ok) {
-    const error: any = new Error(data.message || data.error || 'Failed to retrieve file metadata');
-    error.status = response.status;
-    error.isExpired = data.isExpired;
-    throw error;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      const response = await fetch(`${API_BASE}/api/files/${encodeURIComponent(token)}`);
+
+      // 404: Genuinely not found - do not retry
+      if (response.status === 404) {
+        let data: any = {};
+        try { data = await response.json(); } catch {}
+        const error: any = new Error(data.message || data.error || 'DROP not found');
+        error.status = 404;
+        error.isNotFound = true;
+        throw error;
+      }
+
+      // 410: Expired - do not retry
+      if (response.status === 410) {
+        let data: any = {};
+        try { data = await response.json(); } catch {}
+        const error: any = new Error(data.message || data.error || 'This DROP has disappeared');
+        error.status = 410;
+        error.isExpired = true;
+        throw error;
+      }
+
+      // Transient server/database error (503, 502, 504, 500)
+      if (response.status >= 500) {
+        let data: any = {};
+        try { data = await response.json(); } catch {}
+        const error: any = new Error(data.message || data.error || `Server unavailable (${response.status})`);
+        error.status = response.status;
+        error.isTransient = true;
+
+        if (attempt < maxAttempts - 1) {
+          await new Promise((resolve) => setTimeout(resolve, delays[attempt] || 1000));
+          continue;
+        }
+        throw error;
+      }
+
+      if (!response.ok) {
+        let data: any = {};
+        try { data = await response.json(); } catch {}
+        const error: any = new Error(data.message || data.error || 'Failed to retrieve file metadata');
+        error.status = response.status;
+        throw error;
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (err: any) {
+      // If genuine 404 or 410, immediately throw
+      if (err.isNotFound || err.isExpired || err.status === 404 || err.status === 410) {
+        throw err;
+      }
+
+      // If network failure / fetch error and we have retries left
+      if (attempt < maxAttempts - 1) {
+        await new Promise((resolve) => setTimeout(resolve, delays[attempt] || 1000));
+        continue;
+      }
+
+      // Mark final error as transient
+      err.isTransient = true;
+      throw err;
+    }
   }
 
-  return data;
+  const timeoutErr: any = new Error('Unable to connect to service. Please try again.');
+  timeoutErr.isTransient = true;
+  throw timeoutErr;
 }
 
 export async function verifyPasscode(token: string, passcode: string): Promise<VerifyResponse> {

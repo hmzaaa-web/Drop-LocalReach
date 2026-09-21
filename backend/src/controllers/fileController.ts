@@ -395,6 +395,7 @@ export async function verifyPasscodeHandler(req: Request, res: Response): Promis
 
     res.json({
       success: true,
+      downloadTicket: ticket,
       ticket,
       downloadUrl,
       previewUrl,

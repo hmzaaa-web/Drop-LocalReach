@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { ScrollToTop } from './components/ScrollToTop';
 import { Toast, ToastMessage } from './components/Toast';
 import { Home } from './pages/Home/Home';
 import { About } from './pages/About/About';
@@ -27,6 +28,7 @@ export const App: React.FC = () => {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-brand-neutral-50 text-brand-black font-sans selection:bg-brand-green-mint selection:text-brand-black">
         {/* Navigation */}
         <Navbar />
