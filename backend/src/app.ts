@@ -95,4 +95,5 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
+(app as any).default = app;
 export = app;
