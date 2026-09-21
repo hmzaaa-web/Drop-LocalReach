@@ -31,8 +31,14 @@ export const config = {
   // Optional Contact Email
   contactEmail: process.env.CONTACT_EMAIL || '',
 
-  // Base URL for generated sharing links (e.g. https://drop.localreach.in)
-  publicBaseUrl: (process.env.PUBLIC_BASE_URL || 'https://drop.localreach.in').replace(/\/$/, ''),
+  // Base URL for generated sharing links (canonical: https://drop.localreach.in)
+  publicBaseUrl: (() => {
+    const raw = (process.env.PUBLIC_BASE_URL || '').trim().replace(/\/+$/, '');
+    if (!raw || raw.includes('localhost') || raw.includes('127.0.0.1')) {
+      return 'https://drop.localreach.in';
+    }
+    return raw;
+  })(),
 
   // Expiration in days (Default 10 days)
   fileExpirationDays: parseInt(process.env.FILE_EXPIRATION_DAYS || '10', 10),

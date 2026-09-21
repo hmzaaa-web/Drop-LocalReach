@@ -31,7 +31,8 @@ export const ImageShare: React.FC<ImageShareProps> = ({ onNotify }) => {
     expiresAt?: string;
   } | null;
 
-  const publicUrl = state?.publicUrl || (state?.token ? `${window.location.origin}/f/${state.token}` : '');
+  const CANONICAL_BASE_URL = (import.meta.env.VITE_PUBLIC_BASE_URL || 'https://drop.localreach.in').replace(/\/+$/, '');
+  const publicUrl = state?.publicUrl || (state?.token ? `${CANONICAL_BASE_URL}/f/${state.token}` : '');
   const fileName = state?.fileName || 'file';
   const expiresAt = state?.expiresAt || new Date(Date.now() + 10 * 86400000).toISOString();
 
