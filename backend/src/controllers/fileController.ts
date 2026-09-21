@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import crypto from 'crypto';
 import mongoose from 'mongoose';
 import { config } from '../config/index.js';
+import { ensureDatabaseConnected } from '../db/connect.js';
 import { FileDrop } from '../models/FileDrop.js';
 import { getStorageService } from '../storage/index.js';
 import {
@@ -37,6 +38,15 @@ function getClientIp(req: Request): string {
  */
 export async function createUploadUrlHandler(req: Request, res: Response): Promise<void> {
   try {
+    const isDbConnected = await ensureDatabaseConnected();
+    if (!isDbConnected) {
+      res.status(503).json({
+        error: 'DATABASE NOT CONNECTED',
+        message: 'Database is not connected. Please configure MONGODB_URI in backend/.env or Vercel settings.',
+      });
+      return;
+    }
+
     const clientIp = getClientIp(req);
     const rateCheck = await checkUploadRateLimit(clientIp);
     if (!rateCheck.success) {
@@ -95,23 +105,21 @@ export async function createUploadUrlHandler(req: Request, res: Response): Promi
     const expiresAt = new Date(createdAt.getTime() + config.fileExpirationDays * 24 * 60 * 60 * 1000);
 
     // Create pending document in MongoDB
-    if (mongoose.connection.readyState === 1) {
-      const record = new FileDrop({
-        fileId,
-        tokenHash: tokenHashValue,
-        originalName: sanitizedName,
-        mimeType: mimeType || 'application/octet-stream',
-        size: fileSizeNum,
-        storageKey,
-        passcodeHash: hashedPasscode,
-        createdAt,
-        expiresAt,
-        status: 'pending',
-        downloadCount: 0,
-      });
+    const record = new FileDrop({
+      fileId,
+      tokenHash: tokenHashValue,
+      originalName: sanitizedName,
+      mimeType: mimeType || 'application/octet-stream',
+      size: fileSizeNum,
+      storageKey,
+      passcodeHash: hashedPasscode,
+      createdAt,
+      expiresAt,
+      status: 'pending',
+      downloadCount: 0,
+    });
 
-      await record.save();
-    }
+    await record.save();
 
     // Store temporary reservation in Redis (1-hour TTL)
     await createUploadReservation(
@@ -147,6 +155,15 @@ export async function createUploadUrlHandler(req: Request, res: Response): Promi
  */
 export async function completeUploadHandler(req: Request, res: Response): Promise<void> {
   try {
+    const isDbConnected = await ensureDatabaseConnected();
+    if (!isDbConnected) {
+      res.status(503).json({
+        error: 'DATABASE NOT CONNECTED',
+        message: 'Database is not connected. Please configure MONGODB_URI in backend/.env or Vercel settings.',
+      });
+      return;
+    }
+
     const { fileId, token } = req.body;
 
     if (!fileId || !token) {
@@ -239,7 +256,8 @@ export async function completeUploadHandler(req: Request, res: Response): Promis
  */
 export async function getFileMetadataHandler(req: Request, res: Response): Promise<void> {
   try {
-    if (mongoose.connection.readyState !== 1) {
+    const isDbConnected = await ensureDatabaseConnected();
+    if (!isDbConnected) {
       res.status(503).json({
         error: 'DATABASE NOT CONNECTED',
         message: 'Database is not connected. Please configure MONGODB_URI in backend/.env or Vercel settings.',
@@ -309,7 +327,8 @@ export async function getFileMetadataHandler(req: Request, res: Response): Promi
  */
 export async function verifyPasscodeHandler(req: Request, res: Response): Promise<void> {
   try {
-    if (mongoose.connection.readyState !== 1) {
+    const isDbConnected = await ensureDatabaseConnected();
+    if (!isDbConnected) {
       res.status(503).json({
         error: 'DATABASE NOT CONNECTED',
         message: 'Database is not connected. Please configure MONGODB_URI in backend/.env or Vercel settings.',
@@ -417,7 +436,8 @@ export async function verifyPasscodeHandler(req: Request, res: Response): Promis
  */
 export async function downloadFileHandler(req: Request, res: Response): Promise<void> {
   try {
-    if (mongoose.connection.readyState !== 1) {
+    const isDbConnected = await ensureDatabaseConnected();
+    if (!isDbConnected) {
       res.status(503).json({
         error: 'DATABASE NOT CONNECTED',
         message: 'Database is not connected. Please configure MONGODB_URI in backend/.env or Vercel settings.',
@@ -466,7 +486,8 @@ export async function downloadFileHandler(req: Request, res: Response): Promise<
  */
 export async function previewFileHandler(req: Request, res: Response): Promise<void> {
   try {
-    if (mongoose.connection.readyState !== 1) {
+    const isDbConnected = await ensureDatabaseConnected();
+    if (!isDbConnected) {
       res.status(503).json({
         error: 'DATABASE NOT CONNECTED',
         message: 'Database is not connected. Please configure MONGODB_URI in backend/.env or Vercel settings.',

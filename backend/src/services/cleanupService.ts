@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { FileDrop } from '../models/FileDrop.js';
 import { getStorageService } from '../storage/index.js';
+import { ensureDatabaseConnected } from '../db/connect.js';
 
 export interface CleanupResult {
   cleanedCount: number;
@@ -15,7 +16,8 @@ export async function cleanupExpiredFiles(): Promise<CleanupResult> {
   let abandonedCount = 0;
 
   try {
-    if (mongoose.connection.readyState !== 1) {
+    const isDbConnected = await ensureDatabaseConnected();
+    if (!isDbConnected) {
       return { cleanedCount: 0, abandonedCount: 0 };
     }
 

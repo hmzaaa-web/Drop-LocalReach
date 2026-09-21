@@ -5,7 +5,7 @@ import { config } from './config/index.js';
 import fileRoutes from './routes/fileRoutes.js';
 import qrRoutes from './routes/qrRoutes.js';
 import cronRoutes from './routes/cronRoutes.js';
-import { connectToDatabase } from './db/connect.js';
+import { connectToDatabase, ensureDatabaseConnected, logSafeMongoError } from './db/connect.js';
 
 const app = express();
 
@@ -42,8 +42,18 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health check endpoint (must respond immediately, before DB connection)
-app.get('/api/health', (_req: Request, res: Response) => {
+// Health check endpoint (must respond immediately, with safe diagnostics)
+app.get('/api/health', async (_req: Request, res: Response) => {
+  let mongodbConnStatus: 'CONNECTED' | 'DISCONNECTED' = 'DISCONNECTED';
+  if (config.mongodbUri) {
+    try {
+      const isConnected = await ensureDatabaseConnected();
+      mongodbConnStatus = isConnected ? 'CONNECTED' : 'DISCONNECTED';
+    } catch {
+      mongodbConnStatus = 'DISCONNECTED';
+    }
+  }
+
   res.json({
     status: 'ok',
     service: 'DROP by LocalReach API',
@@ -55,6 +65,9 @@ app.get('/api/health', (_req: Request, res: Response) => {
       b2AppKey: config.b2.applicationKey ? 'SET' : 'EMPTY',
       redisUrl: config.redis.url ? 'SET' : 'EMPTY',
       redisToken: config.redis.token ? 'SET' : 'EMPTY',
+    },
+    services: {
+      mongodbConnection: mongodbConnStatus,
     },
     expirationDays: config.fileExpirationDays,
     contactUrl: config.contactUrl,
@@ -68,8 +81,7 @@ app.use(async (_req: Request, _res: Response, next: NextFunction) => {
       await connectToDatabase(config.mongodbUri);
     }
   } catch (err: any) {
-    // Log safe error without connection string
-    console.error('[Database] Connection check failed:', err?.message || 'Unknown error');
+    logSafeMongoError('Middleware connection attempt failed', err);
   }
   next();
 });
