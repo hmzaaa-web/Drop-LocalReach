@@ -12,7 +12,7 @@ export const Home: React.FC = () => {
     <div className="flex-1 site-container py-8 md:py-14 w-full animate-fade-in">
       <SEO
         title="DROP by LocalReach — Secure Temporary File Sharing"
-        description="Securely share files with temporary links and passcode protection. Upload a file, generate a private DROP link, and share it easily. Files automatically disappear after 10 days."
+        description="Securely share files with temporary links and passcode protection. Upload a file, generate a private DROP link and share it easily. Files automatically disappear after 10 days."
         canonical="https://drop.localreach.in/"
       />
       {/* Brand & Opening Statement */}
@@ -31,7 +31,7 @@ export const Home: React.FC = () => {
         <p className="text-base md:text-lg text-brand-neutral-800 font-normal leading-relaxed">
           Temporary file sharing, protected by passcode.
           <br className="hidden sm:inline" />
-          Share directly via link, or discreetly hidden within an image.
+          Share directly via link or discreetly hidden within an image.
         </p>
       </div>
 
@@ -52,7 +52,7 @@ export const Home: React.FC = () => {
                 UPLOAD FILE
               </h2>
               <p className="text-sm text-brand-neutral-800 leading-relaxed max-w-lg">
-                Share a temporary file securely. Upload your file, set a passcode, and get a shareable link.
+                Share a temporary file securely. Upload your file, set a passcode and get a shareable link.
               </p>
             </div>
           </div>
@@ -172,7 +172,7 @@ export const Home: React.FC = () => {
             </div>
             <h4 className="text-sm font-semibold text-brand-black mb-1">Access</h4>
             <p className="text-xs text-brand-neutral-500 leading-relaxed">
-              Recipient enters passcode, previews, and downloads.
+              Recipient enters passcode, previews and downloads.
             </p>
           </div>
         </div>

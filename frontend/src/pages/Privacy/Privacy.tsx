@@ -8,7 +8,7 @@ export const Privacy: React.FC = () => {
     <div className="flex-1 site-container py-10 md:py-16 w-full animate-fade-in">
       <SEO
         title="DROP by LocalReach — Privacy Policy"
-        description="Read the DROP by LocalReach Privacy Policy. We store zero personal accounts, collect no tracking cookies, and enforce strict 10-day automated file lifecycle deletion."
+        description="Read the DROP by LocalReach Privacy Policy. We store zero personal accounts, collect no tracking cookies and enforce strict 10-day automated file lifecycle deletion."
         canonical="https://drop.localreach.in/privacy"
       />
       <div className="mb-6">
@@ -38,7 +38,7 @@ export const Privacy: React.FC = () => {
             Our Approach to Privacy
           </h2>
           <p className="text-xs md:text-sm text-brand-neutral-800 leading-relaxed">
-            DROP by LocalReach is designed to minimize data collection by design. We do not require accounts, logins, email verification, or profile information. The service exists solely to transfer files temporarily between a sender and a recipient.
+            DROP by LocalReach is designed to minimize data collection by design. We do not require accounts, logins, email verification or profile information. The service exists solely to transfer files temporarily between a sender and a recipient.
           </p>
         </section>
 
@@ -67,7 +67,7 @@ export const Privacy: React.FC = () => {
           </p>
           <ul className="space-y-2 text-xs md:text-sm text-brand-neutral-500 list-disc list-inside">
             <li>Passcodes are salted and hashed using bcrypt prior to database storage.</li>
-            <li>Plaintext passcodes are never stored, logged, or visible in server logs.</li>
+            <li>Plaintext passcodes are never stored, logged or visible in server logs.</li>
             <li>Recipients must provide the matching passcode to unlock and download the file.</li>
           </ul>
         </section>
@@ -103,10 +103,10 @@ export const Privacy: React.FC = () => {
             5. Technical Information & Rate Limiting
           </h2>
           <p className="text-xs md:text-sm text-brand-neutral-800 leading-relaxed">
-            To prevent brute-force attacks against file passcodes and protect system availability, our servers implement automated rate limiting. We log standard technical request metadata (such as IP address, request timestamps, and user-agent strings) strictly for operational security, rate-limit enforcement, and abuse prevention.
+            To prevent brute-force attacks against file passcodes and protect system availability, our servers implement automated rate limiting. We log standard technical request metadata (such as IP address, request timestamps and user-agent strings) strictly for operational security, rate-limit enforcement and abuse prevention.
           </p>
           <p className="text-xs md:text-sm text-brand-neutral-500 leading-relaxed">
-            We do not employ third-party behavioral tracking cookies, advertising pixels, or cross-site analytics scripts.
+            We do not employ third-party behavioral tracking cookies, advertising pixels or cross-site analytics scripts.
           </p>
         </section>
 

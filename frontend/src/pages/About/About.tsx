@@ -9,7 +9,7 @@ export const About: React.FC = () => {
     <div className="flex-1 site-container py-12 md:py-20 w-full animate-fade-in">
       <SEO
         title="DROP by LocalReach — About"
-        description="Learn about DROP by LocalReach — a minimal, privacy-focused temporary file transfer platform built with zero tracking, passcode encryption, and automatic 10-day deletion."
+        description="Learn about DROP by LocalReach — a minimal, privacy-focused temporary file transfer platform built with zero tracking, passcode encryption and automatic 10-day deletion."
         canonical="https://drop.localreach.in/about"
       />
       <div className="mb-6">
@@ -20,11 +20,11 @@ export const About: React.FC = () => {
       <header className="mb-16 md:mb-24 max-w-4xl">
         <div className="inline-flex items-center gap-2 mb-4">
           <span className="text-xs font-bold uppercase tracking-widest text-brand-green">
-            Editorial
+            About DROP
           </span>
           <span className="text-xs text-brand-neutral-500">•</span>
           <span className="text-xs font-medium text-brand-neutral-500">
-            LocalReach Studio
+            By LocalReach
           </span>
         </div>
 
@@ -33,7 +33,7 @@ export const About: React.FC = () => {
         </h1>
 
         <p className="text-lg md:text-xl text-brand-neutral-800 font-normal leading-relaxed max-w-2xl">
-          Most files shared across the internet are only needed for a few days. Yet traditional platforms store them indefinitely, creating lingering digital clutter, tracking risks, and perpetual exposure.
+          Most files shared across the internet are only needed for a few days. Yet traditional platforms store them indefinitely, creating lingering digital clutter, tracking risks and perpetual exposure.
         </p>
       </header>
 
@@ -49,10 +49,10 @@ export const About: React.FC = () => {
           </div>
           <div className="md:col-span-8 space-y-4 text-sm md:text-base text-brand-neutral-800 leading-relaxed">
             <p>
-              DROP is a lightweight, purposeful web utility designed for transient file transfer. It eliminates the friction of account registrations, email verifications, passwords to memorize, and administrative dashboards.
+              DROP is a lightweight, purposeful web utility designed for transient file transfer. It eliminates the friction of account registrations, email verifications, passwords to memorize and administrative dashboards.
             </p>
             <p className="text-brand-neutral-500 text-sm">
-              You upload a document, audio file, archive, or media asset; seal it with a temporary passcode; and receive an ephemeral link. After 10 days, the file and all associated metadata dissolve completely from storage.
+              You upload a document, audio file, archive or media asset; seal it with a temporary passcode; and receive an ephemeral link. After 10 days, the file and all associated metadata dissolve completely from storage.
             </p>
           </div>
         </section>
@@ -67,7 +67,7 @@ export const About: React.FC = () => {
           </div>
           <div className="md:col-span-8 space-y-4 text-sm md:text-base text-brand-neutral-800 leading-relaxed">
             <p>
-              Modern cloud drives encourage endless hoarding. When you only need to send a proof of work, a sensitive invoice, or a high-resolution export to a client or colleague, you shouldn't have to invite them into a shared folder or surrender personal data.
+              Modern cloud drives encourage endless hoarding. When you only need to send a proof of work, a sensitive invoice or a high-resolution export to a client or colleague, you shouldn't have to invite them into a shared folder or surrender personal data.
             </p>
             <div className="glass-card p-6 rounded-brand border border-brand-neutral-200/80 bg-white/70">
               <p className="text-sm font-medium text-brand-black italic">
@@ -90,7 +90,7 @@ export const About: React.FC = () => {
               In addition to direct URLs, DROP introduces discreet low-visibility QR embedding. You can take an ordinary photo or artwork and place a semi-transparent QR code inside it.
             </p>
             <p>
-              To the naked eye, the image looks natural. The recipient can drop that image into DROP's built-in scanner to extract the temporary access link, unlock it with the passcode, and download their file.
+              To the naked eye, the image looks natural. The recipient can drop that image into DROP's built-in scanner to extract the temporary access link, unlock it with the passcode and download their file.
             </p>
           </div>
         </section>

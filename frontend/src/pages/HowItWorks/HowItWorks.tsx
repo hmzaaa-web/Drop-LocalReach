@@ -26,7 +26,7 @@ export const HowItWorks: React.FC = () => {
           How DROP Works
         </h1>
         <p className="text-base md:text-lg text-brand-neutral-800 max-w-2xl leading-relaxed">
-          A step-by-step breakdown of temporary file protection, discreet image steganography, recipient verification, and automated 10-day deletion.
+          A step-by-step breakdown of temporary file protection, discreet image steganography, recipient verification and automated 10-day deletion.
         </p>
       </header>
 
@@ -45,9 +45,9 @@ export const HowItWorks: React.FC = () => {
               Begin by selecting or dragging and dropping your file onto the upload interface.
             </p>
             <ul className="space-y-2 text-xs md:text-sm text-brand-neutral-500 list-disc list-inside">
-              <li>Supports documents, archives, multimedia, and raw binaries up to 100MB.</li>
+              <li>Supports documents, archives, multimedia and raw binaries up to 100MB.</li>
               <li>Files are streamed directly to private object storage without intermediate disk storage.</li>
-              <li>Instant file validation verifies name safety, size thresholds, and format integrity.</li>
+              <li>Instant file validation verifies name safety, size thresholds and format integrity.</li>
             </ul>
           </div>
         </section>
@@ -96,7 +96,7 @@ export const HowItWorks: React.FC = () => {
             <ul className="space-y-2 text-xs md:text-sm text-brand-neutral-500 list-disc list-inside">
               <li>Links use non-sequential, 24-byte URL-safe cryptographic tokens.</li>
               <li>The database only maintains an HMAC-SHA256 signature of the token.</li>
-              <li>Tokens cannot be guessed, enumerated, or reverse-engineered.</li>
+              <li>Tokens cannot be guessed, enumerated or reverse-engineered.</li>
             </ul>
           </div>
         </section>
@@ -118,7 +118,7 @@ export const HowItWorks: React.FC = () => {
               <div className="glass-subtle p-5 rounded-brand border border-brand-neutral-200">
                 <h3 className="text-sm font-bold text-brand-black mb-1">Option A: Direct Link</h3>
                 <p className="text-xs text-brand-neutral-500 leading-relaxed">
-                  Copy the temporary link and send it via your favorite chat, email, or messaging platform. Share the passcode through a separate channel.
+                  Copy the temporary link and send it via your favorite chat, email or messaging platform. Share the passcode through a separate channel.
                 </p>
               </div>
 
@@ -192,7 +192,7 @@ export const HowItWorks: React.FC = () => {
               Once unlocked, the recipient can download the file or preview supported media.
             </p>
             <ul className="space-y-2 text-xs md:text-sm text-brand-neutral-500 list-disc list-inside">
-              <li>In-browser previews for PDFs, standard images, audio, video, and text documents.</li>
+              <li>In-browser previews for PDFs, standard images, audio, video and text documents.</li>
               <li>Unsupported formats cleanly display a direct download button.</li>
             </ul>
           </div>

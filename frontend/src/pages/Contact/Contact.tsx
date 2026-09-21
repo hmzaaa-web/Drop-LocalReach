@@ -30,7 +30,7 @@ export const Contact: React.FC = () => {
     <div className="flex-1 site-container py-10 md:py-16 w-full animate-fade-in">
       <SEO
         title="DROP by LocalReach — Contact"
-        description="Contact the LocalReach team for inquiries, support, or security questions regarding DROP temporary file sharing."
+        description="Contact the LocalReach team for inquiries, support or security questions regarding DROP temporary file sharing."
         canonical="https://drop.localreach.in/contact"
       />
       <div className="mb-6">
@@ -47,7 +47,7 @@ export const Contact: React.FC = () => {
           CONTACT DROP
         </h1>
         <p className="text-sm md:text-base text-brand-neutral-800 max-w-md mx-auto leading-relaxed">
-          Have a problem, found something broken, or need help?
+          Have a problem, found something broken or need help?
         </p>
       </div>
 

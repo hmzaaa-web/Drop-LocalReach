@@ -47,7 +47,7 @@ export const Terms: React.FC = () => {
             2. How DROP Works
           </h2>
           <p className="text-xs md:text-sm text-brand-neutral-800 leading-relaxed">
-            DROP provides temporary, passcode-protected file sharing. Users can upload a file, set a passcode, and generate an ephemeral sharing link or discreetly embed the link inside an image.
+            DROP provides temporary, passcode-protected file sharing. Users can upload a file, set a passcode and generate an ephemeral sharing link or discreetly embed the link inside an image.
           </p>
         </section>
 
@@ -68,7 +68,7 @@ export const Terms: React.FC = () => {
             4. Automatic 10-Day Deletion
           </h2>
           <p className="text-xs md:text-sm text-brand-neutral-800 leading-relaxed">
-            All files and associated database records are automatically and permanently deleted 10 days after upload. Once a file is purged by the automated cleanup service, it cannot be recovered, restored, or accessed under any circumstances.
+            All files and associated database records are automatically and permanently deleted 10 days after upload. Once a file is purged by the automated cleanup service, it cannot be recovered, restored or accessed under any circumstances.
           </p>
         </section>
 
@@ -79,7 +79,7 @@ export const Terms: React.FC = () => {
             5. Passcode Responsibility
           </h2>
           <p className="text-xs md:text-sm text-brand-neutral-800 leading-relaxed">
-            Passcodes are hashed using one-way cryptographic algorithms. DROP does not store plaintext passcodes and cannot reset, recover, or bypass forgotten passcodes. You are solely responsible for remembering the passcode and communicating it securely to your intended recipient.
+            Passcodes are hashed using one-way cryptographic algorithms. DROP does not store plaintext passcodes and cannot reset, recover or bypass forgotten passcodes. You are solely responsible for remembering the passcode and communicating it securely to your intended recipient.
           </p>
         </section>
 
@@ -90,13 +90,13 @@ export const Terms: React.FC = () => {
             6. Prohibited Use
           </h2>
           <p className="text-xs md:text-sm text-brand-neutral-800 leading-relaxed">
-            You agree not to upload, transmit, or distribute through DROP any content that:
+            You agree not to upload, transmit or distribute through DROP any content that:
           </p>
           <ul className="space-y-2 text-xs md:text-sm text-brand-neutral-500 list-disc list-inside">
-            <li>Is illegal, fraudulent, harmful, or promotes unlawful activity.</li>
-            <li>Contains malware, viruses, trojans, ransomware, or malicious payloads.</li>
-            <li>Infringes on copyrights, trademarks, trade secrets, or other intellectual property rights.</li>
-            <li>Attempts to bypass or circumvent rate limits, security boundaries, or system safeguards.</li>
+            <li>Is illegal, fraudulent, harmful or promotes unlawful activity.</li>
+            <li>Contains malware, viruses, trojans, ransomware or malicious payloads.</li>
+            <li>Infringes on copyrights, trademarks, trade secrets or other intellectual property rights.</li>
+            <li>Attempts to bypass or circumvent rate limits, security boundaries or system safeguards.</li>
           </ul>
         </section>
 
@@ -126,7 +126,7 @@ export const Terms: React.FC = () => {
             9. Service Availability
           </h2>
           <p className="text-xs md:text-sm text-brand-neutral-800 leading-relaxed">
-            DROP is provided on an "as is" and "as available" basis without warranties of any kind. While we aim for reliable service operation, we do not guarantee uninterrupted availability, error-free uptime, or indefinite service continuation.
+            DROP is provided on an "as is" and "as available" basis without warranties of any kind. While we aim for reliable service operation, we do not guarantee uninterrupted availability, error-free uptime or indefinite service continuation.
           </p>
         </section>
 
@@ -136,7 +136,7 @@ export const Terms: React.FC = () => {
             10. Changes to the Service
           </h2>
           <p className="text-xs md:text-sm text-brand-neutral-800 leading-relaxed">
-            We reserve the right to modify, suspend, or discontinue any aspect of the service at any time with or without notice.
+            We reserve the right to modify, suspend or discontinue any aspect of the service at any time with or without notice.
           </p>
         </section>
 
