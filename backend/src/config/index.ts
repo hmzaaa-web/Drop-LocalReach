@@ -7,7 +7,7 @@ dotenv.config();
 export const config = {
   port: parseInt(process.env.PORT || '5000', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
-  mongodbUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/drop',
+  mongodbUri: process.env.MONGODB_URI || '',
   storageProvider: 'b2' as const,
   
   // Backblaze B2 (S3-Compatible Storage)

@@ -397,6 +397,13 @@ export const Upload: React.FC<UploadProps> = ({ onNotify }) => {
             </div>
           </div>
 
+          {uploadError && (
+            <div className="p-3 rounded-brand bg-red-50 border border-red-200 text-xs text-red-600 flex items-center gap-2">
+              <AlertCircle size={15} />
+              <span>{uploadError}</span>
+            </div>
+          )}
+
           {/* Navigation Actions */}
           <div className="pt-4 flex items-center justify-between gap-3">
             <Button

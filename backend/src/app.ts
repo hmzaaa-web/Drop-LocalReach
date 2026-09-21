@@ -42,6 +42,25 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Health check endpoint (must respond immediately, before DB connection)
+app.get('/api/health', (_req: Request, res: Response) => {
+  res.json({
+    status: 'ok',
+    service: 'DROP by LocalReach API',
+    environment: {
+      mongodb: config.mongodbUri ? 'SET' : 'EMPTY',
+      b2Endpoint: config.b2.endpoint ? 'SET' : 'EMPTY',
+      b2Bucket: config.b2.bucketName ? 'SET' : 'EMPTY',
+      b2KeyId: config.b2.keyId ? 'SET' : 'EMPTY',
+      b2AppKey: config.b2.applicationKey ? 'SET' : 'EMPTY',
+      redisUrl: config.redis.url ? 'SET' : 'EMPTY',
+      redisToken: config.redis.token ? 'SET' : 'EMPTY',
+    },
+    expirationDays: config.fileExpirationDays,
+    contactUrl: config.contactUrl,
+  });
+});
+
 // Database connection middleware for warm Serverless Function invocations
 app.use(async (_req: Request, _res: Response, next: NextFunction) => {
   try {
@@ -53,16 +72,6 @@ app.use(async (_req: Request, _res: Response, next: NextFunction) => {
     console.error('[Database] Connection check failed:', err?.message || 'Unknown error');
   }
   next();
-});
-
-// Health check endpoint
-app.get('/api/health', (_req: Request, res: Response) => {
-  res.json({
-    status: 'ok',
-    service: 'DROP by LocalReach API',
-    expirationDays: config.fileExpirationDays,
-    contactUrl: config.contactUrl,
-  });
 });
 
 // API Routes
