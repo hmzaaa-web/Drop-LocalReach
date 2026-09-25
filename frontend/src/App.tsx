@@ -14,6 +14,8 @@ import { FileAccess } from './pages/FileAccess/FileAccess';
 import { Contact } from './pages/Contact/Contact';
 import { Privacy } from './pages/Privacy/Privacy';
 import { Terms } from './pages/Terms/Terms';
+import { Admin } from './pages/Admin/Admin';
+
 
 export const App: React.FC = () => {
   const [toast, setToast] = useState<ToastMessage | null>(null);
@@ -48,7 +50,9 @@ export const App: React.FC = () => {
             <Route path="/share-image" element={<ImageShare onNotify={showNotification} />} />
             <Route path="/scan" element={<Scan onNotify={showNotification} />} />
             <Route path="/f/:token" element={<FileAccess onNotify={showNotification} />} />
+            <Route path="/admin" element={<Admin onNotify={showNotification} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
+
           </Routes>
         </main>
 

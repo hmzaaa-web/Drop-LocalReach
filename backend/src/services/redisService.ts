@@ -26,6 +26,8 @@ export function getRedisClient(): Redis | null {
   return redisInstance;
 }
 
+let adminLoginRatelimit: Ratelimit | null = null;
+
 /**
  * Initialize Upstash Rate Limiters
  */
@@ -60,7 +62,16 @@ function getRateLimiters() {
     });
   }
 
-  return { uploadRatelimit, passcodeRatelimit, qrRatelimit };
+  if (!adminLoginRatelimit) {
+    adminLoginRatelimit = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, '15 m'),
+      prefix: 'rate:admin_login',
+      analytics: false,
+    });
+  }
+
+  return { uploadRatelimit, passcodeRatelimit, qrRatelimit, adminLoginRatelimit };
 }
 
 /**
@@ -118,6 +129,24 @@ export async function checkQrRateLimit(ip: string): Promise<{ success: boolean; 
     return { success: true, remaining: 1 };
   }
 }
+
+/**
+ * Check rate limit for admin login attempts (5 attempts / 15 min per IP)
+ */
+export async function checkAdminLoginRateLimit(ip: string): Promise<{ success: boolean; remaining: number }> {
+  try {
+    const limiters = getRateLimiters();
+    if (!limiters || !limiters.adminLoginRatelimit) {
+      return { success: true, remaining: 5 };
+    }
+    const res = await limiters.adminLoginRatelimit.limit(ip);
+    return { success: res.success, remaining: res.remaining };
+  } catch (err) {
+    console.error('[Redis RateLimit] Admin login limit check failed, failing safely:', err);
+    return { success: true, remaining: 1 };
+  }
+}
+
 
 /**
  * Temporary Upload Reservation

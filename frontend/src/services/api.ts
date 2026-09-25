@@ -1,6 +1,16 @@
-import { FileDropMetadata, UploadResponse, VerifyResponse } from '../types';
+import {
+  FileDropMetadata,
+  UploadResponse,
+  VerifyResponse,
+  AdminSessionResponse,
+  AdminLoginResponse,
+  AdminOverviewResponse,
+  AdminStorageResponse,
+  AdminHealthResponse,
+} from '../types';
 
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+
 
 /**
  * Step 1: Request presigned B2 upload URL
@@ -199,3 +209,106 @@ export async function getHealth(): Promise<{ status: string; contactUrl?: string
   } catch {}
   return { status: 'unknown' };
 }
+
+/* ==============================================================================
+ * Admin API Functions (Protected, Secure HttpOnly Credentials)
+ * ============================================================================== */
+
+/**
+ * Check if the browser currently holds an authenticated admin session
+ */
+export async function checkAdminSession(): Promise<AdminSessionResponse> {
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/session`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch {}
+  return { authenticated: false };
+}
+
+/**
+ * Submit admin login password and establish HttpOnly session
+ */
+export async function adminLogin(password: string): Promise<AdminLoginResponse> {
+  const res = await fetch(`${API_BASE}/api/admin/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ password }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || 'Authentication failed');
+  }
+
+  return data;
+}
+
+/**
+ * Log out and clear the admin session cookie
+ */
+export async function adminLogout(): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${API_BASE}/api/admin/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+  return await res.json();
+}
+
+/**
+ * Fetch overview metrics (Vercel Analytics + MongoDB DROP stats)
+ */
+export async function getAdminOverview(): Promise<AdminOverviewResponse> {
+  const res = await fetch(`${API_BASE}/api/admin/overview`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || `Failed to fetch overview metrics (${res.status})`);
+  }
+
+  return await res.json();
+}
+
+/**
+ * Fetch real storage metrics across B2, MongoDB Atlas, and Upstash Redis
+ */
+export async function getAdminStorage(forceRefresh: boolean = false): Promise<AdminStorageResponse> {
+  const url = `${API_BASE}/api/admin/storage${forceRefresh ? '?refresh=true' : ''}`;
+  const res = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || `Failed to fetch storage metrics (${res.status})`);
+  }
+
+  return await res.json();
+}
+
+/**
+ * Fetch real service health and latency measurements
+ */
+export async function getAdminHealth(): Promise<AdminHealthResponse> {
+  const res = await fetch(`${API_BASE}/api/admin/health`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || `Failed to fetch system health (${res.status})`);
+  }
+
+  return await res.json();
+}
+

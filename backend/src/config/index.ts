@@ -1,8 +1,14 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables from .env
+// Load environment variables from .env (supporting root cwd, backend/.env, or relative paths)
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), 'backend', '.env') });
+try {
+  dotenv.config({ path: path.resolve(__dirname, '../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+} catch {}
+
 
 export const config = {
   port: parseInt(process.env.PORT || '5000', 10),
@@ -56,4 +62,18 @@ export const config = {
 
   // Footer Contact link
   contactUrl: process.env.CONTACT_URL || 'https://localreach.in/contact',
+
+  // Admin authentication
+  admin: {
+    password: process.env.ADMIN_PASSWORD || '',
+    sessionSecret: process.env.ADMIN_SESSION_SECRET || 'drop_admin_session_secret_default_2026',
+  },
+
+  // Vercel Web Analytics API
+  vercel: {
+    token: process.env.VERCEL_TOKEN || '',
+    projectId: process.env.VERCEL_PROJECT_ID || '',
+    teamId: process.env.VERCEL_TEAM_ID || '',
+  },
 };
+

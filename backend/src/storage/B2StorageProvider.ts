@@ -6,7 +6,10 @@ import {
   HeadObjectCommand,
   ListObjectVersionsCommand,
   DeleteObjectsCommand,
+  ListObjectsV2Command,
+  HeadBucketCommand,
 } from '@aws-sdk/client-s3';
+
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Readable } from 'stream';
 import { config } from '../config/index.js';
@@ -172,4 +175,58 @@ export class B2StorageProvider implements StorageService {
       return null;
     }
   }
+
+  /**
+   * Paginate through all objects in the bucket to calculate real storage usage and object count
+   */
+  async calculateStorageUsage(): Promise<{ totalBytes: number; objectCount: number }> {
+    let totalBytes = 0;
+    let objectCount = 0;
+    let continuationToken: string | undefined = undefined;
+
+    do {
+      const command: ListObjectsV2Command = new ListObjectsV2Command({
+        Bucket: this.bucket,
+        ContinuationToken: continuationToken,
+      });
+
+      const response = await this.client.send(command);
+
+      if (response.Contents) {
+        for (const item of response.Contents) {
+          totalBytes += item.Size || 0;
+          objectCount++;
+        }
+      }
+
+      continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined;
+    } while (continuationToken);
+
+    return { totalBytes, objectCount };
+  }
+
+  /**
+   * Real lightweight connectivity check for Backblaze B2
+   */
+  async checkConnectivity(): Promise<{ connected: boolean; latencyMs: number; error?: string }> {
+    const start = Date.now();
+    try {
+      const command = new ListObjectsV2Command({
+        Bucket: this.bucket,
+        MaxKeys: 1,
+      });
+      await this.client.send(command);
+      return {
+        connected: true,
+        latencyMs: Date.now() - start,
+      };
+    } catch (err: any) {
+      return {
+        connected: false,
+        latencyMs: Date.now() - start,
+        error: err?.message || 'B2 connectivity check failed',
+      };
+    }
+  }
 }
+

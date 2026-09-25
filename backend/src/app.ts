@@ -5,6 +5,7 @@ import { config } from './config/index.js';
 import fileRoutes from './routes/fileRoutes.js';
 import qrRoutes from './routes/qrRoutes.js';
 import cronRoutes from './routes/cronRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 import { connectToDatabase, ensureDatabaseConnected, logSafeMongoError } from './db/connect.js';
 
 const app = express();
@@ -90,6 +91,7 @@ app.use(async (_req: Request, _res: Response, next: NextFunction) => {
 app.use('/api', fileRoutes);
 app.use('/api', qrRoutes);
 app.use('/api', cronRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
