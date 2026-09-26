@@ -63,10 +63,17 @@ export const config = {
   // Footer Contact link
   contactUrl: process.env.CONTACT_URL || 'https://localreach.in/contact',
 
+  // Resend Email API (Free tier for admin alerts and recovery)
+  resend: {
+    apiKey: process.env.RESEND_API_KEY || '',
+    fromEmail: process.env.RESEND_FROM_EMAIL || 'DROP Admin <noreply@localreach.in>',
+  },
+
   // Admin authentication
   admin: {
     password: process.env.ADMIN_PASSWORD || '',
     sessionSecret: process.env.ADMIN_SESSION_SECRET || 'drop_admin_session_secret_default_2026',
+    recoveryEmail: process.env.ADMIN_RECOVERY_EMAIL || 'mdhamza0612@gmail.com',
   },
 
   // Vercel Web Analytics API

@@ -15,6 +15,10 @@ import { Contact } from './pages/Contact/Contact';
 import { Privacy } from './pages/Privacy/Privacy';
 import { Terms } from './pages/Terms/Terms';
 import { Admin } from './pages/Admin/Admin';
+import { AdminResetPassword } from './pages/Admin/AdminResetPassword';
+import { Analytics } from '@vercel/analytics/react';
+
+
 
 
 export const App: React.FC = () => {
@@ -51,8 +55,8 @@ export const App: React.FC = () => {
             <Route path="/scan" element={<Scan onNotify={showNotification} />} />
             <Route path="/f/:token" element={<FileAccess onNotify={showNotification} />} />
             <Route path="/admin" element={<Admin onNotify={showNotification} />} />
+            <Route path="/admin/reset-password" element={<AdminResetPassword onNotify={showNotification} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
-
           </Routes>
         </main>
 
@@ -61,8 +65,23 @@ export const App: React.FC = () => {
 
         {/* Toast notifications */}
         <Toast toast={toast} onClose={() => setToast(null)} />
+
+        {/* Production Vercel Analytics with admin route exclusion */}
+        <Analytics
+          beforeSend={(event) => {
+            if (event.url.includes('/admin')) return null;
+            if (event.url.includes('token=')) {
+              return {
+                ...event,
+                url: event.url.replace(/token=[^&]*/, 'token=REDACTED'),
+              };
+            }
+            return event;
+          }}
+        />
       </div>
     </BrowserRouter>
+
   );
 };
 

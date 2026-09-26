@@ -9,7 +9,24 @@ import {
   AdminHealthResponse,
 } from '../types';
 
-const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+/**
+ * In production, requests to /api/* are proxied same-origin via Vercel rewrites.
+ * In development, Vite server proxy forwards /api/* to localhost:5000.
+ * Therefore API_BASE is empty string (relative URL) for both production and Vite dev.
+ */
+const getApiBase = (): string => {
+  if (import.meta.env.PROD) {
+    return '';
+  }
+  const raw = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+  if (!raw || raw === '/api') {
+    return '';
+  }
+  return raw;
+};
+
+const API_BASE = getApiBase();
+
 
 
 /**
@@ -311,4 +328,52 @@ export async function getAdminHealth(): Promise<AdminHealthResponse> {
 
   return await res.json();
 }
+
+/**
+ * Request password reset link (sent to fixed admin email on file)
+ */
+export async function requestPasswordReset(): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${API_BASE}/api/admin/password-reset/request`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to request password reset');
+  }
+
+  return data;
+}
+
+/**
+ * Verify whether a password reset token is valid and unexpired
+ */
+export async function verifyPasswordResetToken(token: string): Promise<{ valid: boolean; message?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/password-reset/verify?token=${encodeURIComponent(token)}`);
+    return await res.json();
+  } catch {
+    return { valid: false, message: 'Failed to verify reset token' };
+  }
+}
+
+/**
+ * Confirm password reset with new password
+ */
+export async function confirmPasswordReset(token: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${API_BASE}/api/admin/password-reset/confirm`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, newPassword }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to reset password');
+  }
+
+  return data;
+}
+
 

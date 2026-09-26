@@ -41,3 +41,20 @@ export interface FileMetadataResponse {
   isExpired: boolean;
   status: FileDropStatus;
 }
+
+export interface IAdminCredential {
+  role: string;
+  passwordHash: string;
+  updatedAt: Date;
+}
+
+export interface IAdminCredentialDocument extends IAdminCredential, Document {}
+
+export interface IAdminPasswordReset {
+  tokenHash: string;
+  expiresAt: Date;
+  used: boolean;
+  createdAt: Date;
+}
+
+export interface IAdminPasswordResetDocument extends IAdminPasswordReset, Document {}

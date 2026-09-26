@@ -1,12 +1,14 @@
 import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 import { Response } from 'express';
 import { config } from '../config/index.js';
+import { AdminCredential } from '../models/AdminCredential.js';
 
 export const ADMIN_COOKIE_NAME = 'drop_admin_session';
 export const SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 /**
- * Constant-time password check to prevent timing analysis attacks
+ * Constant-time password check to prevent timing analysis attacks (Bootstrap env fallback)
  */
 export function verifyAdminPassword(inputPassword: string): boolean {
   if (!config.admin.password || !inputPassword) {
@@ -17,6 +19,26 @@ export function verifyAdminPassword(inputPassword: string): boolean {
   const expectedHash = crypto.createHash('sha256').update(String(config.admin.password)).digest();
 
   return crypto.timingSafeEqual(inputHash, expectedHash);
+}
+
+/**
+ * Asynchronous admin password verification:
+ * Checks MongoDB AdminCredential document first (bcrypt hashed),
+ * falling back to static config.admin.password if no document exists.
+ */
+export async function verifyAdminPasswordAsync(inputPassword: string): Promise<boolean> {
+  if (!inputPassword) return false;
+
+  try {
+    const cred = await AdminCredential.findOne({ role: 'admin' });
+    if (cred && cred.passwordHash) {
+      return await bcrypt.compare(inputPassword, cred.passwordHash);
+    }
+  } catch (err) {
+    console.error('[AdminAuth] Error checking MongoDB AdminCredential:', err);
+  }
+
+  return verifyAdminPassword(inputPassword);
 }
 
 /**

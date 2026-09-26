@@ -27,6 +27,7 @@ export function getRedisClient(): Redis | null {
 }
 
 let adminLoginRatelimit: Ratelimit | null = null;
+let passwordResetRatelimit: Ratelimit | null = null;
 
 /**
  * Initialize Upstash Rate Limiters
@@ -71,7 +72,16 @@ function getRateLimiters() {
     });
   }
 
-  return { uploadRatelimit, passcodeRatelimit, qrRatelimit, adminLoginRatelimit };
+  if (!passwordResetRatelimit) {
+    passwordResetRatelimit = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(3, '1 h'),
+      prefix: 'rate:password_reset',
+      analytics: false,
+    });
+  }
+
+  return { uploadRatelimit, passcodeRatelimit, qrRatelimit, adminLoginRatelimit, passwordResetRatelimit };
 }
 
 /**
@@ -143,6 +153,23 @@ export async function checkAdminLoginRateLimit(ip: string): Promise<{ success: b
     return { success: res.success, remaining: res.remaining };
   } catch (err) {
     console.error('[Redis RateLimit] Admin login limit check failed, failing safely:', err);
+    return { success: true, remaining: 1 };
+  }
+}
+
+/**
+ * Check rate limit for admin password reset requests (3 attempts / 1 hour per IP)
+ */
+export async function checkPasswordResetRateLimit(ip: string): Promise<{ success: boolean; remaining: number }> {
+  try {
+    const limiters = getRateLimiters();
+    if (!limiters || !limiters.passwordResetRatelimit) {
+      return { success: true, remaining: 3 };
+    }
+    const res = await limiters.passwordResetRatelimit.limit(ip);
+    return { success: res.success, remaining: res.remaining };
+  } catch (err) {
+    console.error('[Redis RateLimit] Password reset limit check failed, failing safely:', err);
     return { success: true, remaining: 1 };
   }
 }

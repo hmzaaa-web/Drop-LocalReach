@@ -254,6 +254,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, onNoti
             </div>
             <div>
               {renderStatusBadge(health?.mongodb.status || (isLoading ? '...' : 'ERROR'), health?.mongodb.latencyMs, health?.mongodb.error)}
+              {health?.mongodb.status === 'ERROR' && health?.mongodb.error && (
+                <p className="text-[10px] text-rose-600 mt-1.5 leading-tight truncate" title={health.mongodb.error}>
+                  {health.mongodb.error}
+                </p>
+              )}
             </div>
           </div>
 
@@ -265,6 +270,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, onNoti
             </div>
             <div>
               {renderStatusBadge(health?.b2.status || (isLoading ? '...' : 'ERROR'), health?.b2.latencyMs, health?.b2.error)}
+              {health?.b2.status === 'ERROR' && health?.b2.error && (
+                <p className="text-[10px] text-rose-600 mt-1.5 leading-tight truncate" title={health.b2.error}>
+                  {health.b2.error}
+                </p>
+              )}
             </div>
           </div>
 
@@ -276,6 +286,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, onNoti
             </div>
             <div>
               {renderStatusBadge(health?.redis.status || (isLoading ? '...' : 'ERROR'), health?.redis.latencyMs, health?.redis.error)}
+              {health?.redis.status === 'ERROR' && health?.redis.error && (
+                <p className="text-[10px] text-rose-600 mt-1.5 leading-tight truncate" title={health.redis.error}>
+                  {health.redis.error}
+                </p>
+              )}
             </div>
           </div>
 
@@ -291,10 +306,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, onNoti
                 health?.vercelAnalytics.latencyMs,
                 health?.vercelAnalytics.message
               )}
+              {health?.vercelAnalytics.status !== 'CONNECTED' && health?.vercelAnalytics.message && (
+                <p className="text-[10px] text-amber-600 mt-1.5 leading-tight truncate" title={health.vercelAnalytics.message}>
+                  {health.vercelAnalytics.message}
+                </p>
+              )}
             </div>
           </div>
         </div>
       </section>
+
 
       {/* 3. Resource Cards (Free Plan Quota Limits) */}
       <section className="space-y-3">
